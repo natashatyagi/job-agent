@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px 30px;
+            border-radius: 10px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        input[type="search"], select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="search"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .jobs-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .job-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+        
+        .job-title-section h2 {
+            font-size: 1.4em;
+            margin-bottom: 8px;
+        }
+        
+        .job-company {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .job-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        
+        .apply-btn {
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .apply-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        
+        .job-body {
+            padding: 25px;
+        }
+        
+        .job-description {
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .section-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #667eea;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        
+        .resume-section {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        .resume-section pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .cover-letter-section {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #333;
+            border-left: 4px solid #667eea;
+        }
+        
+        .copy-button {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+        
+        .copy-button:hover {
+            background: #764ba2;
+        }
+        
+        .copy-button:active {
+            background: #5568d3;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+        }
+        
+        @media (max-width: 768px) {
+            .job-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+            }
+            
+            input[type="search"], select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Job Application Dashboard</h1>
+            <p class="subtitle">Tailored resumes and cover letters ready to apply</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Total Opportunities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Companies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">Ready</div>
+                <div class="stat-label">To Apply</div>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label>Search:</label>
+                <input type="search" id="searchInput" placeholder="Filter by company or job title...">
+            </div>
+            <div class="filter-group">
+                <label>Company:</label>
+                <select id="companyFilter">
+                    <option value="">All Companies</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="jobs-grid" id="jobsContainer">
+        </div>
+    </div>
+    
+    <script>
+        const jobsData = [{"company": "Google", "title": "Senior Software Engineer - Android", "level": "L4", "location": "Mountain View, CA", "url": "https://careers.google.com/jobs/results/senior-software-engineer-android/", "description": "Build Android apps for Google Play. Experience with Kotlin, Jetpack, performance optimization required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.", "cover_letter": ""}, {"company": "Meta", "title": "Software Engineer - Backend Infrastructure", "level": "E4", "location": "Menlo Park, CA", "url": "https://www.metacareers.com/jobs/senior-software-engineer-backend/", "description": "Design and build backend systems. AWS, Java, system design expertise needed.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Stripe", "title": "Senior Backend Engineer - Payments", "level": "IC4", "location": "San Francisco, CA", "url": "https://stripe.com/jobs/listing/senior-backend-engineer/", "description": "Build payment infrastructure. REST APIs, PostgreSQL, system scalability required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.", "cover_letter": ""}, {"company": "Coinbase", "title": "Senior Software Engineer - Blockchain", "level": "L4", "location": "San Francisco, CA", "url": "https://www.coinbase.com/careers/positions/senior-blockchain-engineer/", "description": "Build on-chain systems. Solidity, Ethereum, smart contracts expertise required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "OpenAI", "title": "Senior Software Engineer - Infrastructure", "level": "IC4", "location": "San Francisco, CA", "url": "https://openai.com/careers/senior-software-engineer/", "description": "Build ML infrastructure. Python, distributed systems, scale required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Scale AI", "title": "Backend Engineer - Data Platform", "level": "IC4", "location": "San Francisco, CA", "url": "https://scale.com/careers/backend-engineer/", "description": "Build data infrastructure. SQL, Python, API design required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Plaid", "title": "Senior Software Engineer - Fintech", "level": "IC4", "location": "San Francisco, CA", "url": "https://plaid.com/careers/senior-engineer/", "description": "Build fintech APIs. REST APIs, banking integrations, security required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Wise", "title": "Software Engineer - Payments", "level": "IC4", "location": "San Francisco, CA", "url": "https://wise.com/careers/engineer/", "description": "Build cross-border payment systems. Distributed systems, reliability required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Apple", "title": "Senior Software Engineer - iOS", "level": "L4", "location": "Cupertino, CA", "url": "https://www.apple.com/careers/us/jobs.html", "description": "Build iOS apps. Swift, performance, user experience critical.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Netflix", "title": "Senior Backend Engineer - Platform", "level": "L4", "location": "Los Gatos, CA", "url": "https://jobs.netflix.com/search?q=senior-backend/", "description": "Build streaming infrastructure at scale. Java, Kubernetes, observability.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Block", "title": "Senior Software Engineer - Cash App", "level": "L4", "location": "San Francisco, CA", "url": "https://www.block.xyz/careers/search?query=senior-backend/", "description": "Build Cash App backend. Kotlin, Android, financial systems experience needed.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}, {"company": "Anthropic", "title": "Senior Software Engineer - Infrastructure", "level": "IC4", "location": "San Francisco, CA", "url": "https://www.anthropic.com/careers", "description": "Build AI infrastructure. Python, distributed systems, ML ops required.", "tailored_resume": "Natasha Tyagi\n2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn\n\nEDUCATION\nPurdue University\nBachelor of Science in Computer Science\nWest Lafayette, IN\nMay 2017\n\nTECHNICAL SKILLS\nLanguages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#\nBackend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs\nMobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux\nTools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex\nCertifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)\n\nWORK EXPERIENCE AND PROJECTS\n\nIndependent Software Developer\nSeattle, WA\nApril 2023-Present\n• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.\n• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.\n• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.\n\nSenior Software Engineer\nQuicket Solutions\nChicago, IL\nJune 2018-April 2023\n• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.\n• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.\n• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.\n• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.\n• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.\n• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.\n• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.\n\nSoftware Development Engineer in Test\nSEI Archway\nIndianapolis, IN\nSeptember 2017-June 2018\n• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.\n• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.\n• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.\n", "cover_letter": ""}];
+        
+        function renderJobs(jobs) {
+            const container = document.getElementById('jobsContainer');
+            
+            if (jobs.length === 0) {
+                container.innerHTML = '<div class="no-results"><h2>No jobs found matching your criteria</h2></div>';
+                return;
+            }
+            
+            container.innerHTML = jobs.map((job, index) => `
+                <div class="job-card" data-company="${job['company']}" data-index="${index}">
+                    <div class="job-header">
+                        <div class="job-title-section">
+                            <h2>${escapeHtml(job['title'])}</h2>
+                            <div class="job-company">${escapeHtml(job['company'])}</div>
+                            <div class="job-meta">
+                                <span class="badge">${escapeHtml(job['level'])}</span>
+                                <span class="badge">${escapeHtml(job['location'])}</span>
+                            </div>
+                        </div>
+                        <a href="${job['url']}" target="_blank" class="apply-btn">View Job</a>
+                    </div>
+                    
+                    <div class="job-body">
+                        <div class="job-description">${escapeHtml(job['description'])}</div>
+                        
+                        <div class="section-title">📄 Tailored Resume</div>
+                        <div class="resume-section">
+                            <pre>${escapeHtml(job['tailored_resume'])}</pre>
+                        </div>
+                        <button class="copy-button" onclick="copyToClipboard('resume-${index}')">Copy Resume</button>
+                        <textarea id="resume-${index}" style="display:none;">${job['tailored_resume']}</textarea>
+                        
+                        <div class="section-title">📝 Cover Letter</div>
+                        <div class="cover-letter-section">
+                            ${escapeHtml(job['cover_letter']).replace(/\n/g, '<br>')}
+                        </div>
+                        <button class="copy-button" onclick="copyToClipboard('letter-${index}')">Copy Cover Letter</button>
+                        <textarea id="letter-${index}" style="display:none;">${job['cover_letter']}</textarea>
+                        
+                        <div style="margin-top: 20px;">
+                            <a href="${job['url']}" target="_blank" class="apply-btn" style="width: 100%; text-align: center; padding: 15px;">Apply Now →</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        function setupFilters() {
+            const companies = [...new Set(jobsData.map(j => j['company']))].sort();
+            const companySelect = document.getElementById('companyFilter');
+            companies.forEach(company => {
+                const option = document.createElement('option');
+                option.value = company;
+                option.textContent = company;
+                companySelect.appendChild(option);
+            });
+            
+            document.getElementById('searchInput').addEventListener('input', filterJobs);
+            document.getElementById('companyFilter').addEventListener('change', filterJobs);
+        }
+        
+        function filterJobs() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const companyFilter = document.getElementById('companyFilter').value;
+            
+            const filtered = jobsData.filter(job => {
+                const matchesSearch = job['title'].toLowerCase().includes(searchTerm) || 
+                                     job['company'].toLowerCase().includes(searchTerm);
+                const matchesCompany = !companyFilter || job['company'] === companyFilter;
+                return matchesSearch && matchesCompany;
+            });
+            
+            renderJobs(filtered);
+        }
+        
+        // Initialize
+        setupFilters();
+        renderJobs(jobsData);
+    </script>
+</body>
+</html>
+        

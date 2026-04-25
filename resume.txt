@@ -1,0 +1,44 @@
+Natasha Tyagi
+2116 N 147th, Shoreline WA 98133, 765.602.7012, natashatyagi@outlook.com, LinkedIn
+
+EDUCATION
+Purdue University
+Bachelor of Science in Computer Science
+West Lafayette, IN
+May 2017
+
+TECHNICAL SKILLS
+Languages: Java, Kotlin, Javascript, Python, Solidity, SQL, C#
+Backend & Cloud: AWS (Lambda, API Gateway, S3), PostgreSQL, Elasticsearch, JSON Schema, REST APIs
+Mobile & Frontend: Jetpack Compose, Kotlin Coroutines, React Native, Redux
+Tools & Testing: Git, Android Studio Profiler, JIRA, Sentry, Firebase, Ranorex
+Certifications: AZ-900: Microsoft Azure Fundamentals, Ethereum Blockchain Developer (Solidity)
+
+WORK EXPERIENCE AND PROJECTS
+
+Independent Software Developer
+Seattle, WA
+April 2023-Present
+• Engineered and audited smart contracts using Solidity, analyzing account models and transaction flows to optimize for gas efficiency and security.
+• Evaluated decentralized protocol upgrades and developer discussions to understand the impact of reliability and transaction clarity on user adoption.
+• Conducted hands-on research into liquidity concepts and staking mechanisms within the Solana and Ethereum ecosystems.
+
+Senior Software Engineer
+Quicket Solutions
+Chicago, IL
+June 2018-April 2023
+• Architected a modular, offline-first Android suite for law enforcement, designing schema-driven data contracts for e-citation, e-crash, and code-compliance modules to ensure secure synchronization between mobile clients and cloud backends.
+• Re-engineered a legacy municipal platform into a device-agnostic React Native app, achieving a 35% reduction in system-wide load times through Redux state management and memory optimization.
+• Optimized mobile app startup performance by reducing load times by ~1.3 seconds through rigorous code profiling, asset optimization, and streamlined data-fetching strategies.
+• Engineered a high-performance property search engine using Elasticsearch and PostgreSQL, reducing query latency from 3s to sub-200ms (a 96% improvement) to support high-volume municipal datasets.
+• Developed an Evidence Management module utilizing AWS and encryption to automate the secure backup and collection of multi-media evidence.
+• Designed a schema-driven API architecture using JSON, AWS Lambda, and API Gateway, ensuring secure and reliable data ingestion for distributed Tow reporting.
+• Accelerated project delivery by 20% by designing a technical training curriculum and mentoring 5+ junior engineers across US and international teams.
+
+Software Development Engineer in Test
+SEI Archway
+Indianapolis, IN
+September 2017-June 2018
+• Develop efficient and comprehensive manual and automated test scripts, functional and usability test cases using Ranorex and C# in an Agile Software Development Life Cycle.
+• Identified and resolved interoperability flaws for the webapps using Mantis, collaborating with developers to improve system stability.
+• Regression-tested the web apps for 2017 major release, achieving 96% pass rate for Cycle 1 and 100% for 2nd.

@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sohne', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+
+        .form-container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #e2e8f0;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            background: rgba(15, 23, 42, 0.8);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(96, 165, 250, 0.1);
+            border: 2px dashed rgba(96, 165, 250, 0.5);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-label:hover {
+            background: rgba(96, 165, 250, 0.15);
+            border-color: #60a5fa;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #cbd5e1;
+            padding: 12px 15px;
+            background: rgba(96, 165, 250, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-label:hover {
+            background: rgba(96, 165, 250, 0.1);
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #60a5fa;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .chip {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chip:hover {
+            background: rgba(96, 165, 250, 0.25);
+        }
+
+        .chip-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        button {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(148, 163, 184, 0.15);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #cbd5e1;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(96, 165, 250, 0.2);
+            border-top-color: #60a5fa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Job Agent</h1>
+            <p class="subtitle">Find, tailor, and apply to your next role</p>
+        </header>
+
+        <div class="form-container">
+            <form id="agentForm">
+                <!-- Resume Upload -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">📄</span>
+                        Your Resume
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Resume (PDF)</label>
+                        <div class="file-input-wrapper">
+                            <label class="file-input-label" for="resumeFile">
+                                <span>📎 Choose file or drag & drop</span>
+                                <span class="file-name" id="fileName"></span>
+                            </label>
+                            <input type="file" id="resumeFile" accept=".pdf" required>
+                        </div>
+                        <div class="error" id="resumeError"></div>
+                    </div>
+                </div>
+
+                <!-- Skills & Preferences -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">⚡</span>
+                        Your Skills
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Skills</label>
+                        <select id="skillsDropdown">
+                            <option value="">+ Add Skill</option>
+                            <optgroup label="Mobile">
+                                <option value="Android">Android</option>
+                                <option value="iOS">iOS</option>
+                                <option value="React Native">React Native</option>
+                                <option value="Flutter">Flutter</option>
+                            </optgroup>
+                            <optgroup label="Frontend">
+                                <option value="React">React</option>
+                                <option value="Vue">Vue</option>
+                                <option value="TypeScript">TypeScript</option>
+                                <option value="JavaScript">JavaScript</option>
+                                <option value="Angular">Angular</option>
+                            </optgroup>
+                            <optgroup label="Backend">
+                                <option value="Python">Python</option>
+                                <option value="Java">Java</option>
+                                <option value="Go">Go</option>
+                                <option value="Node.js">Node.js</option>
+                                <option value="Rust">Rust</option>
+                                <option value="C++">C++</option>
+                                <option value="Kotlin">Kotlin</option>
+                            </optgroup>
+                            <optgroup label="Full Stack">
+                                <option value="Full Stack">Full Stack</option>
+                                <option value="Backend">Backend</option>
+                                <option value="Frontend">Frontend</option>
+                            </optgroup>
+                            <optgroup label="Data & ML">
+                                <option value="Machine Learning">Machine Learning</option>
+                                <option value="Data Engineering">Data Engineering</option>
+                                <option value="Data Science">Data Science</option>
+                                <option value="Big Data">Big Data</option>
+                            </optgroup>
+                            <optgroup label="Infrastructure">
+                                <option value="DevOps">DevOps</option>
+                                <option value="Kubernetes">Kubernetes</option>
+                                <option value="AWS">AWS</option>
+                                <option value="Cloud">Cloud Engineering</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                            </optgroup>
+                            <optgroup label="Blockchain">
+                                <option value="Solidity">Solidity</option>
+                                <option value="Blockchain">Blockchain</option>
+                                <option value="Web3">Web3</option>
+                                <option value="Smart Contracts">Smart Contracts</option>
+                            </optgroup>
+                            <optgroup label="Specialized">
+                                <option value="System Design">System Design</option>
+                                <option value="Database Design">Database Design</option>
+                                <option value="Microservices">Microservices</option>
+                                <option value="Distributed Systems">Distributed Systems</option>
+                                <option value="Security">Security</option>
+                                <option value="Performance Optimization">Performance Optimization</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="chips-container" id="skillsChips">
+                        <div class="chip">
+                            Android
+                            <span class="chip-remove" onclick="removeChip(this, 'skills')">✕</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location & Level -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">📍</span>
+                        Preferences
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Locations</label>
+                        <select id="locationDropdown">
+                            <option value="">+ Add Location</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="US-wide">US-wide</option>
+                            <optgroup label="West">
+                                <option value="Bay Area, CA">Bay Area, CA</option>
+                                <option value="Seattle, WA">Seattle, WA</option>
+                                <option value="Los Angeles, CA">Los Angeles, CA</option>
+                                <option value="San Diego, CA">San Diego, CA</option>
+                                <option value="Denver, CO">Denver, CO</option>
+                                <option value="Austin, TX">Austin, TX</option>
+                                <option value="Portland, OR">Portland, OR</option>
+                            </optgroup>
+                            <optgroup label="Midwest">
+                                <option value="Chicago, IL">Chicago, IL</option>
+                                <option value="Minneapolis, MN">Minneapolis, MN</option>
+                                <option value="Kansas City, MO">Kansas City, MO</option>
+                                <option value="Detroit, MI">Detroit, MI</option>
+                            </optgroup>
+                            <optgroup label="Northeast">
+                                <option value="New York, NY">New York, NY</option>
+                                <option value="Boston, MA">Boston, MA</option>
+                                <option value="Philadelphia, PA">Philadelphia, PA</option>
+                                <option value="Washington DC, DC">Washington DC, DC</option>
+                            </optgroup>
+                            <optgroup label="Southeast">
+                                <option value="Atlanta, GA">Atlanta, GA</option>
+                                <option value="Miami, FL">Miami, FL</option>
+                                <option value="Charlotte, NC">Charlotte, NC</option>
+                                <option value="Nashville, TN">Nashville, TN</option>
+                                <option value="Dallas, TX">Dallas, TX</option>
+                                <option value="Houston, TX">Houston, TX</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="chips-container" id="locationChips">
+                        <div class="chip">
+                            Bay Area
+                            <span class="chip-remove" onclick="removeChip(this, 'location')">✕</span>
+                        </div>
+                        <div class="chip">
+                            Remote
+                            <span class="chip-remove" onclick="removeChip(this, 'location')">✕</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label>Target Level</label>
+                        <select name="level" required>
+                            <option value="">Select level...</option>
+                            <option value="IC3/E3/L3">Junior (IC3/E3/L3)</option>
+                            <option value="IC4/E4/L4" selected>Mid-level (IC4/E4/L4)</option>
+                            <option value="IC5/E5/L5">Senior (IC5/E5/L5)</option>
+                            <option value="Staff/E6+/L6+">Staff+ (Staff/E6+/L6+)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Salary Range (optional)</label>
+                        <input type="text" name="salary" placeholder="e.g., $120K - $200K">
+                    </div>
+                </div>
+
+                <!-- Target Companies -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">🏢</span>
+                        Target Companies (Optional)
+                    </div>
+                    <div class="form-group">
+                        <label>Dream companies (comma-separated, or leave blank to auto-generate)</label>
+                        <textarea name="companies" placeholder="Google, Meta, OpenAI, Anthropic, Stripe..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Generate Job Opportunities</button>
+                    <button type="reset" class="btn-secondary">Clear</button>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    ✓ Form submitted! Processing your applications...
+                </div>
+            </form>
+
+            <div class="loading" id="loadingState">
+                <div class="loading-spinner"></div>
+                <p>Analyzing resume and finding opportunities...</p>
+                <p style="color: #94a3b8; font-size: 0.9em; margin-top: 10px;">This may take a few minutes</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('agentForm');
+        const resumeFile = document.getElementById('resumeFile');
+        const fileName = document.getElementById('fileName');
+        const loadingState = document.getElementById('loadingState');
+        const successMessage = document.getElementById('successMessage');
+
+        // Selected items storage
+        const selectedSkills = new Set(['Android']);
+        const selectedLocations = new Set(['Bay Area', 'Remote']);
+
+        // File input display
+        resumeFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileName.textContent = e.target.files[0].name;
+            }
+        });
+
+        // Drag & drop
+        const fileLabel = document.querySelector('.file-input-label');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileLabel.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        fileLabel.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            resumeFile.files = files;
+            const event = new Event('change', { bubbles: true });
+            resumeFile.dispatchEvent(event);
+        });
+
+        // Dropdown change handlers
+        document.getElementById('skillsDropdown').addEventListener('change', (e) => {
+            if (e.target.value) {
+                selectedSkills.add(e.target.value);
+                updateChips('skills');
+                e.target.value = '';
+            }
+        });
+
+        document.getElementById('locationDropdown').addEventListener('change', (e) => {
+            if (e.target.value) {
+                selectedLocations.add(e.target.value);
+                updateChips('location');
+                e.target.value = '';
+            }
+        });
+
+        // Update chips display
+        function updateChips(type) {
+            const container = document.getElementById(type === 'skills' ? 'skillsChips' : 'locationChips');
+            const selected = type === 'skills' ? selectedSkills : selectedLocations;
+            
+            container.innerHTML = Array.from(selected).map(item => `
+                <div class="chip">
+                    ${item}
+                    <span class="chip-remove" onclick="removeChip(this, '${type}')">✕</span>
+                </div>
+            `).join('');
+        }
+
+        // Remove chip
+        function removeChip(element, type) {
+            const text = element.parentElement.textContent.replace('✕', '').trim();
+            if (type === 'skills') {
+                selectedSkills.delete(text);
+            } else {
+                selectedLocations.delete(text);
+            }
+            updateChips(type);
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const level = document.querySelector('select[name="level"]').value;
+            const salary = document.querySelector('input[name="salary"]').value;
+            const companies = document.querySelector('textarea[name="companies"]').value;
+
+            if (selectedSkills.size === 0 || selectedLocations.size === 0) {
+                alert('Please select at least one skill and location');
+                return;
+            }
+
+            if (!resumeFile.files.length) {
+                alert('Please upload your resume');
+                return;
+            }
+
+            // Show loading
+            form.style.display = 'none';
+            loadingState.style.display = 'block';
+
+            const formData = {
+                skills: Array.from(selectedSkills),
+                locations: Array.from(selectedLocations),
+                level,
+                salary,
+                companies,
+                resumeFile: resumeFile.files[0]
+            };
+
+            console.log('Form Data:', formData);
+
+            // Simulate processing (3 seconds)
+            setTimeout(() => {
+                generateDashboard(formData);
+            }, 3000);
+        });
+
+        function generateDashboard(formData) {
+            // Sample jobs tailored to user
+            const sampleJobs = [
+                {
+                    company: "Google",
+                    title: "Senior Android Engineer",
+                    level: "L4",
+                    location: "Bay Area, CA",
+                    url: "https://careers.google.com/jobs/",
+                    description: "Build Android apps at scale. Kotlin, Jetpack Compose expertise required.",
+                    tailored_resume: "SENIOR ANDROID ENGINEER - GOOGLE\n\nQUICKET SOLUTIONS | June 2018 - April 2023\n• Architected modular Android suite with offline-first capabilities using Kotlin & Jetpack Compose\n• Optimized app startup performance by 1.3 seconds through profiling and asset optimization\n• Designed schema-driven data contracts for secure mobile-cloud synchronization\n• Mentored 5+ junior engineers on Android architecture patterns and best practices",
+                    cover_letter: "Hi Google Team,\n\nI'm excited to apply for the Senior Android Engineer role. With 6 years of experience building production Android apps in Kotlin and Jetpack Compose, I'm confident I can contribute immediately.\n\nAt Quicket Solutions, I architected a modular, offline-first Android suite for law enforcement, achieving 1.3-second startup improvements through rigorous optimization. This directly aligns with Google's performance standards.\n\nI'm particularly interested in Android's ML/AI integration and would love to explore how we can push the platform forward together.\n\nBest regards,\nNatasha"
+                },
+                {
+                    company: "Stripe",
+                    title: "Backend Engineer - Payments",
+                    level: "IC4",
+                    location: "Bay Area, CA",
+                    url: "https://stripe.com/jobs",
+                    description: "Build payment infrastructure. REST APIs, PostgreSQL, system design expertise needed.",
+                    tailored_resume: "BACKEND ENGINEER - STRIPE\n\nQUICKET SOLUTIONS | June 2018 - April 2023\n• Designed schema-driven API architecture using JSON, AWS Lambda, and API Gateway for distributed transaction processing\n• Engineered high-performance search engine using Elasticsearch & PostgreSQL, reducing latency from 3s to sub-200ms (96% improvement)\n• Optimized database queries for high-volume municipal datasets supporting thousands of concurrent users\n• Built Evidence Management module with AWS encryption for secure, auditable backup systems",
+                    cover_letter: "Hi Stripe Team,\n\nI'm applying for the Backend Engineer role in Payments. My 6 years building scalable backend systems directly prepare me for this opportunity.\n\nAt Quicket Solutions, I designed APIs processing high-volume transactions using AWS Lambda, API Gateway, and PostgreSQL. I also engineered a search engine reducing latency from 3s to sub-200ms using Elasticsearch—the kind of performance obsession Stripe demands.\n\nI'm excited to help Stripe's infrastructure handle the world's payments.\n\nBest regards,\nNatasha"
+                },
+                {
+                    company: "Coinbase",
+                    title: "Senior Software Engineer - Blockchain",
+                    level: "L4",
+                    location: "Bay Area, CA",
+                    url: "https://coinbase.com/careers",
+                    description: "Build on-chain systems. Solidity, Ethereum, smart contracts expertise required.",
+                    tailored_resume: "SENIOR SOFTWARE ENGINEER - COINBASE\n\nINDEPENDENT DEVELOPER | April 2023 - Present\n• Engineered and audited smart contracts using Solidity for gas efficiency and security vulnerabilities\n• Evaluated protocol upgrades and analyzed transaction flows for optimization\n• Conducted research on liquidity mechanisms and staking in Ethereum and Solana ecosystems\n• Analyzed account models and decentralized protocol design patterns\n\nQUICKET SOLUTIONS | June 2018 - April 2023\n• Designed secure backend systems with encryption handling multi-media data at scale",
+                    cover_letter: "Hi Coinbase Team,\n\nI'm interested in the Senior Software Engineer - Blockchain role. My recent focus on Solidity development and smart contract optimization, combined with 6 years of backend experience, makes me an ideal fit.\n\nOver the past year, I've deeply explored Ethereum and Solana ecosystems, auditing contracts for gas efficiency and security. I understand the nuances of blockchain development and am excited to apply this expertise at Coinbase scale.\n\nLooking forward to discussing how I can contribute!\n\nBest,\nNatasha"
+                },
+                {
+                    company: "Microsoft",
+                    title: "Senior Software Engineer - Mobile",
+                    level: "IC4",
+                    location: "Seattle, WA",
+                    url: "https://careers.microsoft.com",
+                    description: "Build consumer-grade Android applications. Kotlin, architecture design required.",
+                    tailored_resume: "SENIOR SOFTWARE ENGINEER - MICROSOFT\n\nQUICKET SOLUTIONS | June 2018 - April 2023\n• Architected modular Android suite for law enforcement with offline-first capabilities\n• Re-engineered legacy platform to React Native, achieving 35% reduction in system-wide load times\n• Optimized mobile startup performance by 1.3 seconds through code profiling and streamlined data-fetching\n• Mentored 5+ engineers across US and international teams on mobile best practices",
+                    cover_letter: "Hi Microsoft Team,\n\nI'm excited about the Senior Software Engineer role on your Mobile team. My 6 years building high-performance Android apps, particularly with Kotlin and Jetpack Compose, align perfectly with your needs.\n\nAt Quicket Solutions, I architected an offline-first Android suite handling mission-critical law enforcement workflows. This required meticulous attention to performance, reliability, and user experience—exactly what great consumer products demand.\n\nI'm particularly interested in how AI can enhance mobile experiences and would love to explore this at Microsoft.\n\nBest regards,\nNatasha"
+                },
+                {
+                    company: "Meta",
+                    title: "Software Engineer - Mobile Infrastructure",
+                    level: "E4",
+                    location: "Remote",
+                    url: "https://metacareers.com/jobs",
+                    description: "Build mobile platform infrastructure. Kotlin, system thinking required.",
+                    tailored_resume: "SOFTWARE ENGINEER - META\n\nQUICKET SOLUTIONS | June 2018 - April 2023\n• Re-engineered legacy municipal platform into device-agnostic React Native app, reducing load times by 35%\n• Architected modular Android suite with schema-driven data contracts for offline-first sync\n• Optimized app startup performance by 1.3 seconds through rigorous profiling and asset optimization\n• Designed technical training curriculum and mentored 5+ junior engineers on architecture patterns",
+                    cover_letter: "Hi Meta Team,\n\nI'm applying for the Mobile Infrastructure Engineer role. With 6 years building scalable mobile systems and recent experience with React Native, I can contribute immediately to your infrastructure challenges.\n\nAt Quicket Solutions, I re-engineered a legacy platform into a high-performance React Native app, reducing load times by 35%. This required deep understanding of mobile architecture, state management, and cross-platform optimization.\n\nI'm excited to help Meta build the next generation of mobile infrastructure.\n\nBest,\nNatasha"
+                }
+            ];
+
+            // Create HTML dashboard
+            const dashboardHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { color: white; text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1em; opacity: 0.9; }
+        .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+        .stat-card { background: rgba(255,255,255,0.2); padding: 20px 30px; border-radius: 10px; color: white; backdrop-filter: blur(10px); }
+        .stat-number { font-size: 2em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; opacity: 0.9; }
+        .job-card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .job-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; }
+        .job-title { font-size: 1.3em; margin-bottom: 8px; }
+        .job-company { font-size: 1.1em; opacity: 0.95; }
+        .job-meta { display: flex; gap: 15px; margin-top: 10px; font-size: 0.9em; }
+        .badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; }
+        .job-body { padding: 25px; }
+        .section-title { font-size: 1.1em; font-weight: bold; color: #667eea; margin-top: 20px; margin-bottom: 10px; }
+        .resume-section { background: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; max-height: 250px; overflow-y: auto; white-space: pre-wrap; font-size: 0.9em; line-height: 1.5; }
+        .cover-letter { background: #f0f8ff; padding: 15px; border-radius: 6px; max-height: 250px; overflow-y: auto; white-space: pre-wrap; font-size: 0.9em; line-height: 1.6; border-left: 4px solid #667eea; }
+        .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #764ba2; }
+        .copy-btn { background: #667eea; color: white; padding: 8px 15px; font-size: 0.9em; margin-right: 10px; }
+        .copy-btn:hover { background: #764ba2; }
+        a { color: white; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .view-job-btn { background: #667eea; color: white; padding: 12px 24px; border-radius: 6px; display: inline-block; text-decoration: none; }
+        .view-job-btn:hover { background: #764ba2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Your Job Opportunities</h1>
+            <p class="subtitle">Tailored for: ${formData.skills.join(', ')} | ${formData.locations.join(', ')}</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">${sampleJobs.length}</div>
+                <div class="stat-label">Opportunities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${new Set(sampleJobs.map(j => j.company)).size}</div>
+                <div class="stat-label">Companies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">Ready</div>
+                <div class="stat-label">To Apply</div>
+            </div>
+        </div>
+
+        ${sampleJobs.map((job, i) => `
+        <div class="job-card">
+            <div class="job-header">
+                <div class="job-title">${job.title}</div>
+                <div class="job-company">${job.company}</div>
+                <div class="job-meta">
+                    <span class="badge">${job.level}</span>
+                    <span class="badge">${job.location}</span>
+                </div>
+            </div>
+            <div class="job-body">
+                <p>${job.description}</p>
+                
+                <div class="section-title">📄 Tailored Resume</div>
+                <div class="resume-section">${job.tailored_resume}</div>
+                <button class="copy-btn" onclick="copyText('resume-${i}')">Copy Resume</button>
+                <textarea id="resume-${i}" style="display:none;">${job.tailored_resume}</textarea>
+                
+                <div class="section-title">📝 Cover Letter</div>
+                <div class="cover-letter">${job.cover_letter}</div>
+                <button class="copy-btn" onclick="copyText('letter-${i}')">Copy Cover Letter</button>
+                <textarea id="letter-${i}" style="display:none;">${job.cover_letter}</textarea>
+                
+                <div class="button-group">
+                    <a href="${job.url}" target="_blank" class="view-job-btn">View Full Job →</a>
+                </div>
+            </div>
+        </div>
+        `).join('')}
+    </div>
+
+    <script>
+        function copyText(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
+            `;
+
+            // Create blob and open in new window
+            const blob = new Blob([dashboardHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>

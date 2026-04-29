@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Agent - Find Your Next Role</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+
+        .form-container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #e2e8f0;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="file"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            background: rgba(15, 23, 42, 0.8);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(96, 165, 250, 0.1);
+            border: 2px dashed rgba(96, 165, 250, 0.5);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-label:hover {
+            background: rgba(96, 165, 250, 0.15);
+            border-color: #60a5fa;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .chip {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chip:hover {
+            background: rgba(96, 165, 250, 0.25);
+        }
+
+        .chip-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        button {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #cbd5e1;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(96, 165, 250, 0.2);
+            border-top-color: #60a5fa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Job Agent</h1>
+            <p class="subtitle">Upload resume, set preferences, get tailored opportunities</p>
+        </header>
+
+        <div class="form-container">
+            <form id="agentForm">
+                <!-- API Key -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">🔑</span>
+                        Gemini API Key
+                    </div>
+                    <div class="form-group">
+                        <label>Enter your Gemini API key (get free at ai.google.dev)</label>
+                        <input type="password" id="apiKey" name="api_key" placeholder="Your API key here" required>
+                        <div class="error" id="apiKeyError"></div>
+                    </div>
+                </div>
+
+                <!-- Resume Upload -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">📄</span>
+                        Your Resume
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Resume (PDF or TXT)</label>
+                        <label class="file-input-label" for="resumeFile">
+                            <span>📎 Choose file or drag & drop</span>
+                            <span id="fileName" style="color: #94a3b8; font-size: 0.9em;"></span>
+                        </label>
+                        <input type="file" id="resumeFile" name="resume" accept=".pdf,.txt" required>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">⚡</span>
+                        Your Skills
+                    </div>
+                    <div class="form-group">
+                        <label>Select your skills</label>
+                        <select id="skillsDropdown">
+                            <option value="">+ Add Skill</option>
+                            <optgroup label="Mobile">
+                                <option value="Android">Android</option>
+                                <option value="iOS">iOS</option>
+                                <option value="React Native">React Native</option>
+                                <option value="Flutter">Flutter</option>
+                            </optgroup>
+                            <optgroup label="Backend">
+                                <option value="Python">Python</option>
+                                <option value="Java">Java</option>
+                                <option value="Go">Go</option>
+                                <option value="Node.js">Node.js</option>
+                                <option value="Rust">Rust</option>
+                            </optgroup>
+                            <optgroup label="Full Stack">
+                                <option value="Full Stack">Full Stack</option>
+                                <option value="Frontend">Frontend</option>
+                                <option value="React">React</option>
+                                <option value="TypeScript">TypeScript</option>
+                            </optgroup>
+                            <optgroup label="Blockchain">
+                                <option value="Solidity">Solidity</option>
+                                <option value="Web3">Web3</option>
+                                <option value="Smart Contracts">Smart Contracts</option>
+                            </optgroup>
+                            <optgroup label="Infrastructure">
+                                <option value="DevOps">DevOps</option>
+                                <option value="AWS">AWS</option>
+                                <option value="Kubernetes">Kubernetes</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="chips-container" id="skillsChips"></div>
+                </div>
+
+                <!-- Locations -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">📍</span>
+                        Preferred Locations
+                    </div>
+                    <div class="form-group">
+                        <label>Select your preferred locations</label>
+                        <select id="locationDropdown">
+                            <option value="">+ Add Location</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="US-wide">US-wide</option>
+                            <optgroup label="West">
+                                <option value="Bay Area, CA">Bay Area, CA</option>
+                                <option value="Seattle, WA">Seattle, WA</option>
+                                <option value="Los Angeles, CA">Los Angeles, CA</option>
+                                <option value="Austin, TX">Austin, TX</option>
+                                <option value="Denver, CO">Denver, CO</option>
+                            </optgroup>
+                            <optgroup label="Northeast">
+                                <option value="New York, NY">New York, NY</option>
+                                <option value="Boston, MA">Boston, MA</option>
+                            </optgroup>
+                            <optgroup label="Midwest">
+                                <option value="Chicago, IL">Chicago, IL</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="chips-container" id="locationChips"></div>
+                </div>
+
+                <!-- Level -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label>Target Level</label>
+                        <select name="level" required>
+                            <option value="">Select level...</option>
+                            <option value="IC3/E3/L3">Junior (IC3/E3/L3)</option>
+                            <option value="IC4/E4/L4" selected>Mid-level (IC4/E4/L4)</option>
+                            <option value="IC5/E5/L5">Senior (IC5/E5/L5)</option>
+                            <option value="Staff/E6+/L6+">Staff+ (Staff/E6+/L6+)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Companies to Research (1-50)</label>
+                        <input type="number" name="companies_count" min="1" max="50" value="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Maximum Job Roles to Analyze (1-50)</label>
+                        <input type="number" name="max_jobs" min="1" max="50" value="20">
+                    </div>
+                </div>
+
+                <!-- Dream Companies -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">🏢</span>
+                        Dream Companies (Optional)
+                    </div>
+                    <div class="form-group">
+                        <label>Target companies (comma-separated)</label>
+                        <textarea name="dream_companies" placeholder="Google, Meta, OpenAI, Anthropic, Stripe..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="button-group">
+                    <button type="submit" class="btn-primary" id="submitBtn">Generate Opportunities</button>
+                </div>
+            </form>
+
+            <div class="loading" id="loadingState">
+                <div class="loading-spinner"></div>
+                <p>Processing your resume and generating opportunities...</p>
+                <p style="color: #94a3b8; font-size: 0.9em; margin-top: 10px;">This may take 2-3 minutes</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('agentForm');
+        const resumeFile = document.getElementById('resumeFile');
+        const fileName = document.getElementById('fileName');
+        const skillsDropdown = document.getElementById('skillsDropdown');
+        const locationDropdown = document.getElementById('locationDropdown');
+        const loadingState = document.getElementById('loadingState');
+        const submitBtn = document.getElementById('submitBtn');
+
+        const selectedSkills = new Set();
+        const selectedLocations = new Set();
+
+        // File input
+        resumeFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileName.textContent = e.target.files[0].name;
+            }
+        });
+
+        // Drag & drop
+        const fileLabel = document.querySelector('.file-input-label');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileLabel.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        fileLabel.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            resumeFile.files = dt.files;
+            const event = new Event('change', { bubbles: true });
+            resumeFile.dispatchEvent(event);
+        });
+
+        // Skills dropdown
+        skillsDropdown.addEventListener('change', (e) => {
+            if (e.target.value) {
+                selectedSkills.add(e.target.value);
+                updateChips('skills');
+                e.target.value = '';
+            }
+        });
+
+        // Locations dropdown
+        locationDropdown.addEventListener('change', (e) => {
+            if (e.target.value) {
+                selectedLocations.add(e.target.value);
+                updateChips('location');
+                e.target.value = '';
+            }
+        });
+
+        function updateChips(type) {
+            const container = document.getElementById(type === 'skills' ? 'skillsChips' : 'locationChips');
+            const selected = type === 'skills' ? selectedSkills : selectedLocations;
+            
+            container.innerHTML = Array.from(selected).map(item => `
+                <div class="chip">
+                    ${item}
+                    <span class="chip-remove" onclick="removeChip(this, '${type}')">✕</span>
+                </div>
+            `).join('');
+        }
+
+        function removeChip(element, type) {
+            const text = element.parentElement.textContent.replace('✕', '').trim();
+            if (type === 'skills') {
+                selectedSkills.delete(text);
+            } else {
+                selectedLocations.delete(text);
+            }
+            updateChips(type);
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (selectedSkills.size === 0 || selectedLocations.size === 0) {
+                alert('Please select at least one skill and location');
+                return;
+            }
+
+            if (!resumeFile.files.length) {
+                alert('Please upload your resume');
+                return;
+            }
+
+            const apiKey = document.getElementById('apiKey').value;
+            if (!apiKey) {
+                alert('Please enter your Gemini API key');
+                return;
+            }
+
+            // Show loading
+            form.style.display = 'none';
+            loadingState.style.display = 'block';
+            submitBtn.disabled = true;
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('resume', resumeFile.files[0]);
+            formData.append('api_key', apiKey);
+            Array.from(selectedSkills).forEach(skill => formData.append('skills[]', skill));
+            Array.from(selectedLocations).forEach(location => formData.append('locations[]', location));
+            formData.append('level', document.querySelector('select[name="level"]').value);
+            formData.append('companies_count', document.querySelector('input[name="companies_count"]').value);
+            formData.append('max_jobs', document.querySelector('input[name="max_jobs"]').value);
+            formData.append('dream_companies', document.querySelector('textarea[name="dream_companies"]').value);
+
+            try {
+                // Convert resume to base64 and save form data
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    sessionStorage.setItem('formData', JSON.stringify({
+                        resume_base64: e.target.result,
+                        api_key: apiKey,
+                        skills: Array.from(selectedSkills),
+                        locations: Array.from(selectedLocations),
+                        level: document.querySelector('select[name="level"]').value,
+                        companies_count: document.querySelector('input[name="companies_count"]').value,
+                        max_jobs: document.querySelector('input[name="max_jobs"]').value,
+                        dream_companies: document.querySelector('textarea[name="dream_companies"]').value
+                    }));
+                    
+                    // Redirect to dashboard
+                    window.location.href = '/dashboard';
+                };
+                reader.readAsDataURL(resumeFile.files[0]);
+            } catch (error) {
+                alert('Error: ' + error.message);
+                form.style.display = 'block';
+                loadingState.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Job Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; color: white; margin-bottom: 40px; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1em; opacity: 0.9; }
+        .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+        .stat-card { background: rgba(255, 255, 255, 0.2); padding: 20px 30px; border-radius: 10px; color: white; backdrop-filter: blur(10px); }
+        .stat-number { font-size: 2em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; opacity: 0.9; }
+        .progress-bar { background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; color: white; margin-bottom: 30px; text-align: center; }
+        .progress-text { font-size: 0.95em; margin-bottom: 10px; }
+        .progress-fill { background: rgba(96, 165, 250, 0.3); height: 6px; border-radius: 3px; overflow: hidden; }
+        .progress-done { background: #60a5fa; height: 100%; transition: width 0.3s ease; }
+        .job-card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: slideIn 0.5s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .job-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; }
+        .job-title { font-size: 1.4em; margin-bottom: 8px; font-weight: bold; }
+        .job-company { font-size: 1.1em; opacity: 0.95; }
+        .job-meta { display: flex; gap: 15px; margin-top: 10px; font-size: 0.9em; opacity: 0.9; }
+        .badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; }
+        .job-body { padding: 25px; }
+        .job-description { color: #333; margin-bottom: 20px; line-height: 1.6; }
+        .section-title { font-size: 1.1em; font-weight: bold; color: #667eea; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; }
+        .resume-section { background: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; max-height: 300px; overflow-y: auto; font-size: 0.95em; line-height: 1.5; color: #333; white-space: pre-wrap; word-wrap: break-word; }
+        .cover-letter-section { background: #f0f8ff; padding: 15px; border-radius: 6px; margin-bottom: 15px; max-height: 250px; overflow-y: auto; font-size: 0.95em; line-height: 1.6; color: #333; border-left: 4px solid #667eea; white-space: pre-wrap; word-wrap: break-word; }
+        .button-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        button { background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; font-size: 0.95em; }
+        button:hover { background: #764ba2; }
+        .view-job-btn { background: #667eea; color: white; padding: 12px 24px; border-radius: 6px; display: inline-block; transition: all 0.3s; text-decoration: none; }
+        .view-job-btn:hover { background: #764ba2; transform: translateY(-2px); }
+        a { color: white; text-decoration: none; }
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(96, 165, 250, 0.2); border-top-color: #60a5fa; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Your Job Opportunities</h1>
+            <p class="subtitle">Generating tailored resumes and cover letters...</p>
+        </header>
+        <div class="stats" id="statsContainer"></div>
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-text"><span class="loading-spinner"></span><span id="progressText">Generating...</span></div>
+            <div class="progress-fill"><div class="progress-done" id="progressDone" style="width: 0%"></div></div>
+        </div>
+        <div id="jobsContainer"></div>
+    </div>
+
+    <script>
+        let allJobs = [];
+
+        // Get form data from session
+        const formData = sessionStorage.getItem('formData');
+        if (!formData) {
+            document.body.innerHTML = '<p style="color: white; text-align: center; padding: 40px;">No form data found. Please go back and try again.</p>';
+        } else {
+            const data = JSON.parse(formData);
+            startStreaming(data);
+        }
+
+        function startStreaming(formDataObj) {
+            const form = new FormData();
+            
+            // Convert base64 back to blob
+            const base64 = formDataObj.resume_base64.split(',')[1];
+            const byteString = atob(base64);
+            const ab = new ArrayBuffer(byteString.length);
+            const ua = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ua[i] = byteString.charCodeAt(i);
+            }
+            const blob = new Blob([ab], { type: 'application/octet-stream' });
+            
+            form.append('resume', blob, 'resume.pdf');
+            form.append('api_key', formDataObj.api_key);
+            formDataObj.skills.forEach(s => form.append('skills[]', s));
+            formDataObj.locations.forEach(l => form.append('locations[]', l));
+            form.append('level', formDataObj.level);
+            form.append('companies_count', formDataObj.companies_count);
+            form.append('max_jobs', formDataObj.max_jobs);
+            form.append('dream_companies', formDataObj.dream_companies);
+
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const progressDone = document.getElementById('progressDone');
+
+            fetch('/api/generate', { method: 'POST', body: form })
+                .then(response => {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = '';
+
+                    return reader.read().then(function processChunk({ done, value }) {
+                        if (done) { progressBar.style.display = 'none'; return; }
+
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n\n');
+                        buffer = lines.pop();
+
+                        lines.forEach(line => {
+                            if (line.startsWith('data: ')) {
+                                try {
+                                    const data = JSON.parse(line.slice(6));
+                                    if (data.type === 'metadata') {
+                                        displayStats(data);
+                                        progressBar.style.display = 'block';
+                                    } else if (data.type === 'job') {
+                                        allJobs.push(data.job);
+                                        addJobCard(data.job, allJobs.length - 1);
+                                        const percent = (data.progress.current / data.progress.total) * 100;
+                                        progressDone.style.width = percent + '%';
+                                        progressText.innerHTML = `<span class="loading-spinner"></span>Processing: ${data.progress.current}/${data.progress.total} jobs...`;
+                                    } else if (data.type === 'complete') {
+                                        progressBar.style.display = 'none';
+                                    }
+                                } catch (e) { console.error('Parse error:', e); }
+                            }
+                        });
+
+                        return reader.read().then(processChunk);
+                    });
+                })
+                .catch(error => alert('Error: ' + error.message));
+        }
+
+        function displayStats(metadata) {
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="stat-card"><div class="stat-number">${metadata.total_jobs}</div><div class="stat-label">Opportunities</div></div>
+                <div class="stat-card"><div class="stat-number" id="uniqueCompanies">0</div><div class="stat-label">Companies</div></div>
+                <div class="stat-card"><div class="stat-number">Ready</div><div class="stat-label">To Apply</div></div>
+            `;
+        }
+
+        function updateUniqueCompanies() {
+            const uniqueCompanies = new Set(allJobs.map(job => job.company));
+            document.getElementById('uniqueCompanies').textContent = uniqueCompanies.size;
+        }
+
+        function addJobCard(job, index) {
+            const card = document.createElement('div');
+            card.className = 'job-card';
+            card.innerHTML = `
+                <div class="job-header">
+                    <div class="job-title">${escapeHtml(job.title)}</div>
+                    <div class="job-company">${escapeHtml(job.company)}</div>
+                    <div class="job-meta"><span class="badge">${escapeHtml(job.level)}</span><span class="badge">${escapeHtml(job.location)}</span></div>
+                </div>
+                <div class="job-body">
+                    <div class="job-description">${escapeHtml(job.description)}</div>
+                    <div class="section-title">📄 Tailored Resume</div>
+                    <div class="resume-section">${escapeHtml(job.tailored_resume)}</div>
+                    <button onclick="copyToClipboard('resume-${index}')">Copy Resume</button>
+                    <textarea id="resume-${index}" style="display:none;">${job.tailored_resume}</textarea>
+                    <div class="section-title">📝 Cover Letter</div>
+                    <div class="cover-letter-section">${escapeHtml(job.cover_letter)}</div>
+                    <button onclick="copyToClipboard('letter-${index}')">Copy Cover Letter</button>
+                    <textarea id="letter-${index}" style="display:none;">${job.cover_letter}</textarea>
+                    <div class="button-group"><a href="${job.url}" target="_blank" class="view-job-btn">View Full Job →</a></div>
+                </div>
+            `;
+            document.getElementById('jobsContainer').appendChild(card);
+            updateUniqueCompanies();
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>

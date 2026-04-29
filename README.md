@@ -1,142 +1,114 @@
-# Job Application Agent
+# Job Agent v2
 
-An AI-powered agent that generates target companies, finds job listings, tailors your resume and cover letters, and outputs an interactive dashboard ready to apply.
+An intelligent job application assistant that tailors your resume and generates cover letters for each opportunity.
 
 ## Features
 
-- **Intelligent company selection**: Generates 50 target companies based on your skills and location
-- **Job scraping**: Collects up to 80 job opportunities across target companies
-- **Resume tailoring**: Customizes your resume for each specific job
-- **Cover letter generation**: Creates personalized cover letters for every opportunity
-- **Interactive dashboard**: Browse all jobs with tailored materials in one place
-- **Ready to apply**: Everything prepared—just copy and apply
+- 📄 **Upload Resume** — PDF or TXT format
+- ⚡ **Select Skills** — Choose your technical skills (Android, Backend, Solidity, etc.)
+- 📍 **Set Locations** — Pick preferred job locations
+- 🔑 **Use Your API Key** — Bring your own Gemini API key (free tier available)
+- 🎯 **Get Tailored Content** — Resume and cover letter customized for each job
+- 📊 **Interactive Dashboard** — Search, filter, and copy tailored materials
 
 ## Setup
 
-### 1. Install dependencies
+### 1. Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Add your Gemini API key
+### 2. Get Your Gemini API Key
 
-Edit `.env` file:
-```
-GEMINI_API_KEY=your-actual-key-here
-```
+1. Go to https://ai.google.dev/aistudio
+2. Click "Get API key"
+3. Create a new key in Google Cloud
+4. Copy the key (you'll paste it in the app)
 
-Get your free API key from: https://ai.google.dev/aistudio
-
-### 3. Verify your resume
-
-The agent reads from `resume.txt`. This file is pre-populated with your resume from the PDF, but you can edit it if needed.
-
-## Usage
+### 3. Run the App
 
 ```bash
-python3 main.py
+python app.py
 ```
 
-The script will:
-1. Load your resume
-2. Generate 50 target companies (based on skills: Android, Full Stack, Backend, Solidity)
-3. Scrape job listings from those companies
-4. Tailor your resume for each job
-5. Generate a personalized cover letter for each job
-6. Create `job_dashboard.html`
+The app will start at `http://localhost:5000`
 
-### 4. Open the dashboard
+### 4. Open in Browser
 
-```bash
-open job_dashboard.html
-# or
-# double-click the file in your file explorer
-```
-
-You'll see:
-- All job opportunities
-- Tailored resume for each job
-- Personalized cover letter
-- Click "View Job" to see the posting
-- Click "Copy Resume" / "Copy Cover Letter" to prepare
-- Click "Apply Now" to go to the application
+- Go to http://localhost:5000
+- Upload your resume
+- Select your skills and locations
+- Paste your Gemini API key
+- Click "Generate Opportunities"
 
 ## How It Works
 
-### Target Company Generation
-The agent uses Gemini to intelligently generate companies based on:
-- Your skills (Android, Backend, Full Stack, Solidity)
-- Location preferences (Bay Area, Seattle, Remote)
-- Your experience level (Mid-level, 6 YoE = L4/E4/IC4)
+1. **Form Submission** — You upload resume, select preferences, and provide API key
+2. **Company Generation** — App generates 50 target companies based on your profile
+3. **Job Scraping** — Fetches job listings from target companies
+4. **Resume Tailoring** — Uses Gemini to customize your resume for each job
+5. **Cover Letter** — Generates personalized cover letter for each opportunity
+6. **Dashboard** — Shows all opportunities with tailored materials ready to copy
 
-Starting points: Google, Meta, OpenAI, Anthropic, Scale AI, Coinbase, Stripe, etc.
+## File Structure
 
-### Resume Tailoring
-For each job:
-1. Analyzes the job description
-2. Identifies relevant skills and experience from your resume
-3. Reorders bullet points to highlight the most relevant work
-4. Keeps your original resume structure intact
-
-### Cover Letter Generation
-Creates warm, personal cover letters that:
-- Show genuine interest in the company and role
-- Highlight 1-2 key accomplishments from your resume
-- Are personal (not stiff or formal)
-- Include a clear call to action
-
-## Customization
-
-### Change preferences
-
-Edit `main.py` and update:
-```python
-skills = "Android, Full Stack, Backend, Solidity"
-location = "Bay Area, Seattle, Remote"
+```
+job-agent-v2/
+├── app.py                 # Flask app main entry
+├── job_processor.py       # Core logic with Gemini API
+├── requirements.txt       # Python dependencies
+├── templates/
+│   ├── index.html        # Main form
+│   └── dashboard.html    # Results dashboard
+└── README.md             # This file
 ```
 
-### Adjust company count
+## Usage Flow
 
-Change in `main.py`:
-```python
-companies = agent.generate_target_companies(skills, location, count=50)  # adjust 50
+1. **Upload Resume** — TXT or PDF
+2. **Select Skills** — Click dropdown, choose skills (Android, Python, Solidity, etc.)
+3. **Select Locations** — Bay Area, Remote, Seattle, NY, etc.
+4. **Choose Level** — Junior, Mid-level, Senior, Staff+
+5. **Enter API Key** — Your free Gemini API key
+6. **Click Generate** — App processes everything (2-3 minutes)
+7. **Review Dashboard** — See all tailored opportunities
+8. **Copy & Apply** — Copy resume and cover letter, apply on company website
+
+## Notes
+
+- Your API key is **never saved** — it's used only for this session
+- Resume is **not stored** — processed immediately and discarded
+- All processing happens **locally** on your machine
+- You apply **manually** to each job (for safety and control)
+
+## Troubleshooting
+
+**"No module named flask"**
+```bash
+pip install flask
 ```
 
-### Adjust job count
+**"API key invalid"**
+- Make sure you copied the full key from ai.google.dev
+- Don't include extra spaces
 
-Change in `agent.py`:
-```python
-def get_mock_jobs(self, companies, max_jobs=80):  # adjust 80
-```
+**"Processing takes too long"**
+- Tailoring resumes + generating cover letters takes 2-3 minutes for 20 jobs
+- This is normal with Gemini API
 
-## Tips
+## Future Improvements
 
-1. **Review before applying** — The dashboard is a starting point. Customize cover letters per company if you want
-2. **Apply consistently** — Aim to apply to 3-5 jobs per day for better results
-3. **Track applications** — Note which companies you've applied to
-4. **Follow up** — After 1-2 weeks with no response, consider a follow-up email
-
-## Limitations (MVP)
-
-- Currently uses mock job data for speed (real scraping would take longer)
-- To integrate real company scraping, update `get_mock_jobs()` in `agent.py`
-- Cover letters are 1-shot generated (not iteratively improved)
-
-## Next Steps
-
-1. Add real company career page scraping
-2. Integrate with LinkedIn API for live job feeds
-3. Add application tracking (which jobs you've applied to)
-4. Add follow-up reminders
-5. Support multiple resumes for different role types
+- Real company career page scraping (beyond mock data)
+- Support for more API providers
+- Auto-apply functionality (optional)
+- Application tracking
+- Cover letter customization per job
 
 ## License
 
-MIT
+MIT - Use freely, modify as needed
 
 ## Questions?
 
-Check the dashboard HTML or re-run the agent if you want fresh results.
-
-Good luck with your applications! 🚀
+Check the code comments or refer to Gemini API docs: https://ai.google.dev/
